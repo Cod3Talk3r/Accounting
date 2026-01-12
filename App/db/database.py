@@ -1,0 +1,19 @@
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
+
+
+DATABASE_URL = "sqlite+aiosqlite:///./AccountingDatabase.db"
+
+
+engine = create_async_engine(DATABASE_URL)
+
+SessionLocal = async_sessionmaker(
+        bind=engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+        autoflush=False,
+        )
+
+
+class Base(DeclarativeBase):
+    pass
