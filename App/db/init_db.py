@@ -1,4 +1,5 @@
 from db.database import engine, Base, SessionLocal
+from fastapi import Depends
 
 
 async def init_db():
@@ -9,3 +10,6 @@ async def init_db():
 async def get_db():
     async with SessionLocal() as session:
         yield session
+
+
+get_db_session = Depends(get_db)
