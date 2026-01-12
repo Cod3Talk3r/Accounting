@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from db.init_db import init_db
+import routers.users as users
 
 
 app = FastAPI()
@@ -13,3 +14,6 @@ async def start_up():
 @app.get("/AppHealth")
 async def health():
     return {"Health": "App is Healthy"}
+
+
+app.include_router(users.router, prefix="/User")
