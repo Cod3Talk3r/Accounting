@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(inData: UserRegisterInput, db = get_db_session):
+async def register(inData: UserRegisterInput, db=get_db_session):
     user = User(username=inData.username, password=inData.password, email=inData.email, role=inData.role)
 
     db.add(user)
@@ -18,7 +18,7 @@ async def register(inData: UserRegisterInput, db = get_db_session):
 
 
 @router.post("/login")
-async def login(data: UserLoginInput, db = get_db_session):
+async def login(data: UserLoginInput, db=get_db_session):
     query = sa.select(User).where(User.username == data.username)
     result = await db.execute(query)
     user = result.scalar_one_or_none()
@@ -30,7 +30,7 @@ async def login(data: UserLoginInput, db = get_db_session):
 
 
 @router.delete("/delete")
-async def delete(data: UserLoginInput, db = get_db_session):
+async def delete(data: UserLoginInput, db=get_db_session):
     query = sa.select(User).where(User.username == data.username)
     result = await db.execute(query)
     user = result.scalar_one_or_none()
@@ -42,3 +42,23 @@ async def delete(data: UserLoginInput, db = get_db_session):
     await db.commit()
 
     return {"msg": f"user: {data.username} deleted."}
+
+
+@router.put("/update/{ID}")
+async def update(data: UserRegisterInput, ID, db=get_db_session):
+    query = sa.select(User).where(User.id == ID)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        return {"msg": "Not User"}
+
+    user.username = data.username
+    user.password = data.password
+    user.email = data.email
+    user.role = data.role
+
+    await db.commit()
+    await db.refresh(user)
+
+    return user
