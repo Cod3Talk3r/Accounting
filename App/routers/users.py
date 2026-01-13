@@ -27,3 +27,18 @@ async def login(data: UserLoginInput, db = get_db_session):
         return {"msg": "Not User"}
 
     return {"Login": "Succeed."}
+
+
+@router.delete("/delete")
+async def delete(data: UserLoginInput, db = get_db_session):
+    query = sa.select(User).where(User.username == data.username)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+ 
+    if not user or (user.password != data.password):
+        return {"msg": "Not User"}
+
+    await db.delete(user)
+    await db.commit()
+
+    return {"msg": f"user: {data.username} deleted."}
