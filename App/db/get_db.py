@@ -1,5 +1,5 @@
 from fastapi import Depends
-from db.database import SessionLocal
+from db.database import SessionLocal, AsyncSession
 
 
 async def get_db():
@@ -7,4 +7,4 @@ async def get_db():
         yield session
 
 
-get_db_session = Depends(get_db)
+get_db_session: AsyncSession = Depends(get_db)
