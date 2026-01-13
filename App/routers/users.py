@@ -62,3 +62,15 @@ async def update(data: UserRegisterInput, ID, db=get_db_session):
     await db.refresh(user)
 
     return user
+
+
+@router.get("/user/{ID}")
+async def user_by_id(ID, db=get_db_session):
+    query = sa.select(User).where(User.id == ID)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        return {"msg": "user not found!"}
+
+    return user
