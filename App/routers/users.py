@@ -45,20 +45,12 @@ async def delete(data: UserLoginInput, db=get_db_session):
 
 @router.put("/update/{ID}")
 async def update(data: UserRegisterInput, ID, db=get_db_session):
-    query = sa.select(User).where(User.id == ID)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
+    user = await UserRepository.get_user_by_id(ID, db)
 
     if not user:
-        return {"msg": "Not User"}
+        raise UserNotFound
 
-    user.username = data.username
-    user.password = data.password
-    user.email = data.email
-    user.role = data.role
-
-    await db.commit()
-    await db.refresh(user)
+    await UserRepository.update_user(data, user, db)
 
     return user
 
