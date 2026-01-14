@@ -17,12 +17,13 @@ async def register(data: UserRegisterInput, db=get_db_session):
 
 @router.post("/login")
 async def login(data: UserLoginInput, db=get_db_session):
-    query = sa.select(User).where(User.username == data.username)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
+    user = await UserRepository.get_user_by_username(data, db)
 
-    if not user or (user.password != data.password):
-        return {"msg": "Not User"}
+    if not user:
+        raise UserNotFound
+
+    if user.password != data.password:
+        return {"msg": "Wrong Password!"}
 
     return {"Login": "Succeed."}
 
