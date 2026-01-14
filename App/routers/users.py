@@ -4,18 +4,15 @@ from db.get_db import get_db_session
 from db.models import User
 import sqlalchemy as sa
 from errors import UserNotFound
+from repository.Repository import UserRepository
 
 
 router = APIRouter()
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(inData: UserRegisterInput, db=get_db_session):
-    user = User(username=inData.username, password=inData.password, email=inData.email, role=inData.role)
-
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
+async def register(data: UserRegisterInput, db=get_db_session):
+        await UserRepository.register_user(data, db)
 
 
 @router.post("/login")
@@ -35,7 +32,7 @@ async def delete(data: UserLoginInput, db=get_db_session):
     query = sa.select(User).where(User.username == data.username)
     result = await db.execute(query)
     user = result.scalar_one_or_none()
- 
+
     if not user or (user.password != data.password):
         return {"msg": "Not User"}
 
