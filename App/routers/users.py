@@ -11,8 +11,8 @@ router = APIRouter()
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(inData: UserRegisterInput, db=get_db_session):
-    await UserRepository.register(inData, db)
+async def register(data: UserRegisterInput, db=get_db_session):
+        await UserRepository.register_user(data, db)
 
 
 @router.post("/login")
