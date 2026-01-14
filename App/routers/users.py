@@ -3,6 +3,7 @@ from inout.input_ import UserRegisterInput, UserLoginInput
 from db.get_db import get_db_session
 from db.models import User
 import sqlalchemy as sa
+from errors import UserNotFound
 
 
 router = APIRouter()
@@ -71,6 +72,6 @@ async def user_by_id(ID, db=get_db_session):
     user = result.scalar_one_or_none()
 
     if not user:
-        return {"msg": "user not found!"}
+        raise UserNotFound
 
     return user
