@@ -1,8 +1,6 @@
 from fastapi import APIRouter, status
 from inout.input_ import UserRegisterInput, UserLoginInput
 from db.get_db import get_db_session
-from db.models import User
-import sqlalchemy as sa
 from errors import UserNotFound
 from repository.Repository import UserRepository
 
@@ -57,9 +55,7 @@ async def update(data: UserRegisterInput, ID, db=get_db_session):
 
 @router.get("/user/{ID}")
 async def user_by_id(ID, db=get_db_session):
-    query = sa.select(User).where(User.id == ID)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
+    user = await UserRepository.get_user_by_id(ID, db)
 
     if not user:
         raise UserNotFound
