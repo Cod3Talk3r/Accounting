@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 from inout.input_ import UserRegisterInput, UserLoginInput
 from db.get_db import get_db_session
-from errors import WrongUsernameOrPassword, NotFoundUser
+from errors import WrongUsernameOrPassword, NotFoundUser, ExistEmail, ExistUsername
 from repository.Repository import UserRepository
 
 
@@ -10,11 +10,11 @@ router = APIRouter()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(data: UserRegisterInput, db=get_db_session):
-    if (UserRepository.is_username):
-        raise NotFoundUser
+    if (await UserRepository.is_username(data.username, db)):
+        raise ExistUsername
 
-    if UserRepository.is_email:
-        raise NotFoundUser
+    if (await UserRepository.is_email(data.email, db)):
+        raise ExistEmail
 
     await UserRepository.register_user(data, db)
 
