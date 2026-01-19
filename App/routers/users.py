@@ -3,6 +3,7 @@ from inout.input_ import UserRegisterInput, UserLoginInput
 from db.get_db import get_db_session
 from errors import WrongUsernameOrPassword, NotFoundUser, ExistEmail, ExistUsername
 from repository.Repository import UserRepository
+from utils.secrets import passwordManager
 
 
 router = APIRouter()
@@ -16,6 +17,8 @@ async def register(data: UserRegisterInput, db=get_db_session):
     if (await UserRepository.is_email(data.email, db)):
         raise ExistEmail
 
+    data.password = passwordManager.hash(data.password)
+
     await UserRepository.register_user(data, db)
 
 
@@ -23,10 +26,7 @@ async def register(data: UserRegisterInput, db=get_db_session):
 async def login(data: UserLoginInput, db=get_db_session):
     user = await UserRepository.get_user_by_username(data, db)
 
-    if not user:
-        raise WrongUsernameOrPassword
-
-    if user.password != data.password:
+    if not user or not (passwordManager.verify(data.password, user.password)):
         raise WrongUsernameOrPassword
 
     return {"Login": "Succeed."}
@@ -36,10 +36,7 @@ async def login(data: UserLoginInput, db=get_db_session):
 async def delete(data: UserLoginInput, db=get_db_session):
     user = await UserRepository.get_user_by_username(data, db)
 
-    if not user:
-        raise WrongUsernameOrPassword
-
-    if user.password != data.password:
+    if not user or not (passwordManager.verify(data.password, user.password)):
         raise WrongUsernameOrPassword
 
     await UserRepository.delete_user(user, db)
@@ -59,12 +56,10 @@ async def update(data: UserRegisterInput, ID, db=get_db_session):
     elif (await UserRepository.is_username(data.username, db)):
         raise ExistUsername
 
-
     if (data.email == user.email):
         pass
     elif (await UserRepository.is_email(data.email, db)):
         raise ExistEmail
-
 
     await UserRepository.update_user(data, user, db)
 
