@@ -11,3 +11,9 @@ class UserRegisterInput(BaseModel):
 class UserLoginInput(BaseModel):
     username: str
     password: str
+
+
+class UserUpdateInput(BaseModel):
+    username: str
+    email: str
+    role: str
