@@ -1,0 +1,3 @@
+KEY = "TEST"
+ALG = "HS256"
+MIN = 5
