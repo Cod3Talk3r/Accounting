@@ -3,6 +3,7 @@ from inout.input_ import UserRegisterInput, UserLoginInput
 from db.get_db import get_db_session
 from errors import WrongUsernameOrPassword, NotFoundUser, ExistEmail, ExistUsername
 from repository.Repository import UserRepository
+from utils.secrets import passwordManager
 
 
 router = APIRouter()
@@ -15,6 +16,8 @@ async def register(data: UserRegisterInput, db=get_db_session):
 
     if (await UserRepository.is_email(data.email, db)):
         raise ExistEmail
+
+    data.password = passwordManager.hash(data.password)
 
     await UserRepository.register_user(data, db)
 
