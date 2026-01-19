@@ -12,7 +12,6 @@ router = APIRouter()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(data: UserRegisterInput, db=get_db_session):
-
     if (await UserRepository.is_username(data.username, db)):
         raise ExistUsername
 
