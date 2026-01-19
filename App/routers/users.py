@@ -54,6 +54,18 @@ async def update(data: UserRegisterInput, ID, db=get_db_session):
     if not user:
         raise NotFoundUser
 
+    if (data.username == user.username):
+        pass
+    elif (await UserRepository.is_username(data.username, db)):
+        raise ExistUsername
+
+
+    if (data.email == user.email):
+        pass
+    elif (await UserRepository.is_email(data.email, db)):
+        raise ExistEmail
+
+
     await UserRepository.update_user(data, user, db)
 
     return user
