@@ -1,4 +1,4 @@
-from inout.input_ import UserRegisterInput, UserLoginInput
+from inout.input_ import UserRegisterInput, UserLoginInput, UserUpdateInput
 from db.models import User
 import sqlalchemy as sa
 
@@ -38,9 +38,8 @@ class UserRepository():
 
 
     @staticmethod
-    async def update_user(data: UserRegisterInput, user: User, db) -> None:
+    async def update_user(data: UserUpdateInput, user: User, db) -> None:
         user.username = data.username  #type: ignore
-        user.password = data.password  #type: ignore
         user.email = data.email  #type: ignore
         user.role = data.role  #type:ignore
 
