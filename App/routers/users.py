@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status
-from inout.input_ import UserRegisterInput, UserLoginInput
+from inout.out import OutputGetUser
+from inout.input_ import UserRegisterInput, UserLoginInput, UserUpdateInput
 from db.get_db import get_db_session
 from errors import WrongUsernameOrPassword, NotFoundUser, ExistEmail, ExistUsername
 from repository.Repository import UserRepository
@@ -45,7 +46,7 @@ async def delete(data: UserLoginInput, db=get_db_session):
 
 
 @router.put("/update/{ID}", status_code=status.HTTP_204_NO_CONTENT)
-async def update(data: UserRegisterInput, ID, db=get_db_session):
+async def update(data: UserUpdateInput, ID, db=get_db_session):
     user = await UserRepository.get_user_by_id(ID, db)
 
     if not user:
@@ -73,4 +74,4 @@ async def user_by_id(ID, db=get_db_session):
     if not user:
         raise NotFoundUser
 
-    return user
+    return OutputGetUser(username=user.username, email=user.email, role=user.role)
