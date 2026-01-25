@@ -1,7 +1,7 @@
 from pydantic import BaseModel
+from db.models import UserRole
 
 
 class OutputGetUser(BaseModel):
     username: str
-    email: str
-    role: str
+    role: UserRole

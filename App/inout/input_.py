@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
+from db.models import UserRole
 
 
 class UserRegisterInput(BaseModel):
     username: str = Field(min_length=6, max_length=15)
     password: str = Field(min_length=8, max_length=32)
-    email: str = Field(min_length=7, max_length=32)
-    role: str
+    role: UserRole
 
 
 class UserLoginInput(BaseModel):
@@ -15,5 +15,4 @@ class UserLoginInput(BaseModel):
 
 class UserUpdateInput(BaseModel):
     username: str = Field(min_length=6, max_length=15)
-    email: str = Field(min_length=7, max_length=32)
-    role: str
+    role: UserRole
