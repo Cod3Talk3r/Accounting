@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from inout.out import OutputGetUser
 from inout.input_ import UserRegisterInput, UserLoginInput, UserUpdateInput
 from db.get_db import get_db_session
-from errors import WrongUsernameOrPassword, NotFoundUser, ExistEmail, ExistUsername
+from errors import WrongUsernameOrPassword, NotFoundUser, ExistUsername
 from repository.Repository import UserRepository
 from utils.secrets import passwordManager
 
