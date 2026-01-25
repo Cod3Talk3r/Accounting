@@ -6,11 +6,15 @@ class NotFoundUser(HTTPException):
         self.status_code = status.HTTP_404_NOT_FOUND
         self.detail = "User Not Found!"
 
+    pass
+
 
 class WrongUsernameOrPassword(HTTPException):
     def __init__(self):
         self.status_code = status.HTTP_404_NOT_FOUND
         self.detail = "Wrong Username Or Password!"
+
+    pass
 
 
 class ExistUsername(HTTPException):
@@ -18,8 +22,12 @@ class ExistUsername(HTTPException):
         self.status_code = status.HTTP_409_CONFLICT
         self.detail = "This Username Exists."
 
+    pass
 
-class ExistEmail(HTTPException):
+
+class TokenIsNotValid(HTTPException):
     def __init__(self):
-        self.status_code = status.HTTP_409_CONFLICT
-        self.detail = "This Email Exists."
+        self.status_code = status.HTTP_401_UNAUTHORIZED
+        self.detail = "Token is not valid!"
+
+    pass
