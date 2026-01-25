@@ -15,9 +15,6 @@ async def register(data: UserRegisterInput, db=get_db_session):
     if (await UserRepository.is_username(data.username, db)):
         raise ExistUsername
 
-    if (await UserRepository.is_email(data.email, db)):
-        raise ExistEmail
-
     data.password = passwordManager.hash(data.password)
 
     await UserRepository.register_user(data, db)
@@ -57,11 +54,6 @@ async def update(data: UserUpdateInput, ID, db=get_db_session):
     elif (await UserRepository.is_username(data.username, db)):
         raise ExistUsername
 
-    if (data.email == user.email):
-        pass
-    elif (await UserRepository.is_email(data.email, db)):
-        raise ExistEmail
-
     await UserRepository.update_user(data, user, db)
 
     return user
@@ -74,4 +66,4 @@ async def user_by_id(ID, db=get_db_session):
     if not user:
         raise NotFoundUser
 
-    return OutputGetUser(username=user.username, email=user.email, role=user.role)
+    return OutputGetUser(username=user.username, role=user.role)
