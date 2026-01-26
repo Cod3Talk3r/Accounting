@@ -13,8 +13,8 @@ class UserRepository():
         await db.refresh(user)
 
     @staticmethod
-    async def get_user_by_username(data: UserLoginInput, db) -> User:
-        query = sa.select(User).where(User.username == data.username)
+    async def get_user_by_username(data: str, db) -> User:
+        query = sa.select(User).where(User.username == data)
         result = await db.execute(query)
         user = result.scalar_one_or_none()
 
