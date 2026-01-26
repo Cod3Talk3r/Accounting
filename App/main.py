@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from db.init_db import init_db
 import routers.users as users
+import routers.auth as auth
 
 
 app = FastAPI()
@@ -17,3 +18,4 @@ async def health():
 
 
 app.include_router(users.router, prefix="/User")
+app.include_router(auth.route)
