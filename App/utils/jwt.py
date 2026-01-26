@@ -1,7 +1,7 @@
 from jose import JWTError, jwt
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from App.db.models import UserRole
+from db.models import UserRole
 from utils.settings import MIN, KEY, ALG
 from datetime import datetime, timedelta, timezone
 from repository.Repository import UserRepository
@@ -13,8 +13,8 @@ from errors import TokenIsNotValid
 bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
-def user_authendication(username, password, db):
-    user = UserRepository.get_user_by_username(username, db)
+async def user_authendication(username, password, db):
+    user = await UserRepository.get_user_by_username(username, db)
 
     if not user:
         return False
