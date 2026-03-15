@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from inout.out import OutputGetUser
+from inout.out import OutputGetUserById, CreatedOut
 from inout.input_ import UserRegisterInput, UserLoginInput, UserUpdateInput
 from db.get_db import get_db_session
 from errors import WrongUsernameOrPassword, NotFoundUser, ExistUsername
@@ -19,10 +19,14 @@ async def register(data: UserRegisterInput, db=get_db_session):
 
     await UserRepository.register_user(data, db)
 
+    user = await UserRepository.get_user_by_username(data.username, db)
+
+    return CreatedOut(id=user.id, username=user.username, role=user.role)
+
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login(data: UserLoginInput, db=get_db_session):
-    user = await UserRepository.get_user_by_username(data, db)
+    user = await UserRepository.get_user_by_username(data.username, db)
 
     if not user or not (passwordManager.verify(data.password, user.password)):
         raise WrongUsernameOrPassword
@@ -32,7 +36,7 @@ async def login(data: UserLoginInput, db=get_db_session):
 
 @router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
 async def delete(data: UserLoginInput, db=get_db_session):
-    user = await UserRepository.get_user_by_username(data, db)
+    user = await UserRepository.get_user_by_username(data.username, db)
 
     if not user or not (passwordManager.verify(data.password, user.password)):
         raise WrongUsernameOrPassword
@@ -56,14 +60,13 @@ async def update(data: UserUpdateInput, ID, db=get_db_session):
 
     await UserRepository.update_user(data, user, db)
 
-    return user
 
 
-@router.get("/user/{ID}", status_code=status.HTTP_200_OK)
+@router.get("/{ID}", status_code=status.HTTP_200_OK)
 async def user_by_id(ID, db=get_db_session):
     user = await UserRepository.get_user_by_id(ID, db)
 
     if not user:
         raise NotFoundUser
 
-    return OutputGetUser(username=user.username, role=user.role)
+    return OutputGetUserById(username=user.username, role=user.role)
