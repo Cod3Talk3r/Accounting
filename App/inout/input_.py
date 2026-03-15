@@ -15,4 +15,3 @@ class UserLoginInput(BaseModel):
 
 class UserUpdateInput(BaseModel):
     username: str = Field(min_length=6, max_length=15)
-    role: UserRole

@@ -1,4 +1,4 @@
-from inout.input_ import UserRegisterInput, UserLoginInput, UserUpdateInput
+from inout.input_ import UserRegisterInput, UserUpdateInput
 from db.models import User
 import sqlalchemy as sa
 
@@ -36,7 +36,6 @@ class UserRepository():
     @staticmethod
     async def update_user(data: UserUpdateInput, user: User, db) -> None:
         user.username = data.username  # type: ignore
-        user.role = data.role  # type:ignore
 
         await db.commit()
         await db.refresh(user)
