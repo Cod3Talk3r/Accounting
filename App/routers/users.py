@@ -11,21 +11,19 @@ from utils.jwt import user_dependency
 router = APIRouter()
 
 
-@router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(data: UserLoginInput, db=get_db_session):
-    user = await UserRepository.get_user_by_username(data.username, db)
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(userToken=user_dependency, db=get_db_session):
+    user = await UserRepository.get_user_by_id(userToken.user_id, db)
 
-    if not user or not (passwordManager.verify(data.password, user.password)):
-        raise WrongUsernameOrPassword
+    if not user:
+        raise NotFoundUser
 
     await UserRepository.delete_user(user, db)
 
-    return {"msg": f"user: {data.username} deleted."}
 
-
-@router.put("/update/{ID}", status_code=status.HTTP_204_NO_CONTENT)
-async def update(data: UserUpdateInput, ID, db=get_db_session):
-    user = await UserRepository.get_user_by_id(ID, db)
+@router.put("/ChangeUsername/", status_code=status.HTTP_204_NO_CONTENT)
+async def change_username(data: UserUpdateInput, userToken=user_dependency, db=get_db_session):
+    user = await UserRepository.get_user_by_id(userToken.user_id, db)
 
     if not user:
         raise NotFoundUser
@@ -38,10 +36,9 @@ async def update(data: UserUpdateInput, ID, db=get_db_session):
     await UserRepository.update_user(data, user, db)
 
 
-
 @router.get("/", status_code=status.HTTP_200_OK)
-async def user_by_id(user=user_dependency, db=get_db_session):
-    user = await UserRepository.get_user_by_id(user.user_id, db)
+async def user_by_id(userToken=user_dependency, db=get_db_session):
+    user = await UserRepository.get_user_by_id(userToken.user_id, db)
 
     if not user:
         raise NotFoundUser
