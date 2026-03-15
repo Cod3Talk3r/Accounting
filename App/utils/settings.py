@@ -1,3 +1,3 @@
 KEY = "2e93b3c7b866261c71e6aaa772bfdd68a0fd5afcdac3c6de22d22df20f542168"
 ALG = "HS256"
-MIN = 5
+MIN = 30

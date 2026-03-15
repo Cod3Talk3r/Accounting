@@ -31,3 +31,11 @@ class TokenIsNotValid(HTTPException):
         self.detail = "Token is not valid!"
 
     pass
+
+
+class UnAuthorized(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_401_UNAUTHORIZED
+        self.detail = "Not Authorized!"
+
+        pass

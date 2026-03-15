@@ -6,7 +6,7 @@ from errors import ExistUsername, NotFoundUser
 from utils.secrets import passwordManager
 from inout.jwt import JWTResponsePayload
 from utils.jwt import user_authendication, generate_token
-from inout.input_ import UserRegisterInput
+from inout.input_ import UserRegisterInput, UserLoginInput
 from repository.Repository import UserRepository 
 
 
@@ -30,6 +30,7 @@ async def create_user(data: UserRegisterInput, db = get_db_session):
     await UserRepository.register_user(user_model, db)
 
 
+
 @route.post("/token", response_model=JWTResponsePayload)
 async def create_token(data: OAuth2PasswordRequestForm = Depends(), db = get_db_session):
     user = await user_authendication(data.username, data.password, db)
@@ -37,6 +38,6 @@ async def create_token(data: OAuth2PasswordRequestForm = Depends(), db = get_db_
     if not user:
         raise NotFoundUser
 
-    token = generate_token(user.id, user.username, user.role.value)
+    token = generate_token(user.id, data.username, user.role.value)
 
     return token
