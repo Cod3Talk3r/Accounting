@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-# from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from db.get_db import get_db_session
 from db.models import User
 from errors import ExistUsername, NotFoundUser
@@ -32,12 +32,12 @@ async def create_user(data: UserRegisterInput, db = get_db_session):
 
 
 @route.post("/token", response_model=JWTResponsePayload)
-async def create_token(data: UserLoginInput, db = get_db_session):
+async def create_token(data: OAuth2PasswordRequestForm = Depends(), db = get_db_session):
     user = await user_authendication(data.username, data.password, db)
 
     if not user:
         raise NotFoundUser
 
-    token = generate_token(user.id, user.username, user.role.value)
+    token = generate_token(user.id, data.username, user.role.value)
 
     return token
