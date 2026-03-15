@@ -25,13 +25,13 @@ async def user_authendication(username, password, db):
     return user
 
 
-def generate_token (username: str, role: str, user_id: int, expire: timedelta | None = None):
+def generate_token (user_id: int, username: str, role: str, expire: timedelta | None = None):
     exp = expire if expire else datetime.now(timezone.utc) + timedelta(minutes=MIN)
 
     to_encode = {
             "sub": username,
-            "id": user_id,
             "exp": exp,
+            "id": user_id,
             "role": role
         }
 
@@ -40,13 +40,13 @@ def generate_token (username: str, role: str, user_id: int, expire: timedelta | 
     return JWTResponsePayload(access_token=encoded_jwt)
 
 
-def verify_token(token: str = Depends(bearer)):
+async def verify_token(token: str = Depends(bearer)):
     try:
         payload = jwt.decode(token, KEY, algorithms=[ALG])
 
-        username: str = payload.get("sub")
-        user_id: int = payload.get("id")
-        user_role: UserRole = payload.get("role")
+        username: str = payload.get("sub") # type: ignore
+        user_id: int = payload.get("id") # type: ignore
+        user_role: UserRole = payload.get("role") # type: ignore
 
         if username is None or user_id is None:
             raise TokenIsNotValid
