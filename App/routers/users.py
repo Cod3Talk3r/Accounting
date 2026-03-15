@@ -39,9 +39,9 @@ async def update(data: UserUpdateInput, ID, db=get_db_session):
 
 
 
-@router.get("/{ID}", status_code=status.HTTP_200_OK)
-async def user_by_id(ID, db=get_db_session):
-    user = await UserRepository.get_user_by_id(ID, db)
+@router.get("/", status_code=status.HTTP_200_OK)
+async def user_by_id(user=user_dependency, db=get_db_session):
+    user = await UserRepository.get_user_by_id(user.user_id, db)
 
     if not user:
         raise NotFoundUser
