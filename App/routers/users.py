@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
-from inout.out import OutputGetUserById
-from inout.input_ import UserUpdateInput, UserLoginInput
+from schema.out import OutputGetUserById
+from schema.input_ import UserUpdateInput, UserLoginInput
 from db.get_db import get_db_session
 from errors import WrongUsernameOrPassword, NotFoundUser, ExistUsername
 from repository.Repository import UserRepository

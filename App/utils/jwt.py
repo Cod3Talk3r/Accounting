@@ -6,7 +6,7 @@ from utils.settings import MIN, KEY, ALG
 from datetime import datetime, timedelta, timezone
 from repository.Repository import UserRepository
 from utils.secrets import passwordManager
-from inout.jwt import JWTResponsePayload, Payload
+from schema.jwt import JWTResponsePayload, Payload
 from errors import TokenIsNotValid
 
 

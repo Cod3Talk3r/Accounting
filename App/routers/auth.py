@@ -4,9 +4,9 @@ from db.get_db import get_db_session
 from db.models import User
 from errors import ExistUsername, NotFoundUser
 from utils.secrets import passwordManager
-from inout.jwt import JWTResponsePayload
+from schema.jwt import JWTResponsePayload
 from utils.jwt import user_authendication, generate_token
-from inout.input_ import UserRegisterInput, UserLoginInput
+from schema.input_ import UserRegisterInput, UserLoginInput
 from repository.Repository import UserRepository 
 
 

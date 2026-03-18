@@ -1,4 +1,4 @@
-from inout.input_ import UserRegisterInput, UserUpdateInput
+from schema.input_ import UserRegisterInput, UserUpdateInput
 from db.models import User
 import sqlalchemy as sa
 
