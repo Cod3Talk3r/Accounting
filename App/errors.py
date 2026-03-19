@@ -55,3 +55,11 @@ class ExistTag(HTTPException):
         self.detail = "This Tag Exists."
 
     pass
+
+
+class DefaultTag(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_400_BAD_REQUEST
+        self.detail = "Can't Delete This Tag!"
+
+    pass
