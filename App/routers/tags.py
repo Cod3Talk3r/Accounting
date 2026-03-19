@@ -8,6 +8,10 @@ from errors import NotFoundTag, ExistTag
 router = APIRouter()
 
 
+async def creating_default_tag(ownerId: int, db):
+    await TagRepository.create_tag(TagInput(name="متفرقه"), ownerId, db)
+
+
 @router.get("/")
 async def get_all_tags(db=get_db_session):
     return await TagRepository.get_all_tags(db)
