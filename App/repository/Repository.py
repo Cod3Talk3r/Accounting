@@ -71,8 +71,8 @@ class TagRepository():
         return result.scalar_one_or_none()
     
     @staticmethod
-    async def create_tag(name: TagInput, db) -> None:
-        tag = Tag(**name.model_dump())
+    async def create_tag(name: TagInput, ownerId: int, db) -> None:
+        tag = Tag(**name.model_dump(), ownerId=ownerId)
 
         db.add(tag)
         await db.commit()
