@@ -7,7 +7,8 @@ from utils.secrets import passwordManager
 from schema.jwt import JWTResponsePayload
 from utils.jwt import user_authendication, generate_token
 from schema.input_ import UserRegisterInput, UserLoginInput
-from repository.Repository import UserRepository 
+from repository.Repository import UserRepository
+from routers.tags import creating_default_tag
 
 
 router = APIRouter(
@@ -28,6 +29,10 @@ async def create_user(data: UserRegisterInput, db = get_db_session):
     user_model = User(**data.model_dump())
 
     await UserRepository.register_user(user_model, db)
+
+    user_model = await UserRepository.get_user_by_username(user_model.username, db)
+    await creating_default_tag(user_model.id, db)
+
 
 
 
