@@ -62,11 +62,30 @@ class TagRepository():
         result = await db.execute(query)
 
         return result.scalar_one_or_none()
+
+    @staticmethod
+    async def get_tag_by_id(id: int, db) -> Tag:
+        query = sa.select(Tag).where(Tag.id==id)
+        result = await db.execute(query)
+
+        return result.scalar_one_or_none()
     
     @staticmethod
     async def create_tag(name: TagInput, db) -> None:
         tag = Tag(**name.model_dump())
 
         db.add(tag)
+        await db.commit()
+        await db.refresh(tag)
+
+    @staticmethod
+    async def delete_tag(tag: Tag, db) -> None:
+        await db.delete(tag)
+        await db.commit()
+
+    @staticmethod
+    async def change_tag(tag: Tag, newTag: TagInput, db) -> None:
+        tag.name = newTag.name
+
         await db.commit()
         await db.refresh(tag)
