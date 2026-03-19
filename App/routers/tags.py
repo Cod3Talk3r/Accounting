@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from db.get_db import get_db_session
 from repository.Repository import TagRepository
 from schema.input_ import TagInput
-from errors import NotFoundTag, ExistTag
+from errors import NotFoundTag, ExistTag, DefaultTag
 
 
 router = APIRouter()
@@ -43,6 +43,9 @@ async def delete_tag_by_id(id: int, db=get_db_session):
 
     if tag is None:
         raise NotFoundTag
+
+    if tag.name == "متفرقه":
+        raise DefaultTag
     
     await TagRepository.delete_tag(tag, db)
 
