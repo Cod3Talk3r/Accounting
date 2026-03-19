@@ -10,13 +10,13 @@ from schema.input_ import UserRegisterInput, UserLoginInput
 from repository.Repository import UserRepository 
 
 
-route = APIRouter(
+router = APIRouter(
         prefix="/auth",
         tags=["auth"]
 )
 
 
-@route.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(data: UserRegisterInput, db = get_db_session):
     user = await UserRepository.is_username(data.username, db)
 
@@ -31,7 +31,7 @@ async def create_user(data: UserRegisterInput, db = get_db_session):
 
 
 
-@route.post("/token", response_model=JWTResponsePayload)
+@router.post("/token", response_model=JWTResponsePayload)
 async def create_token(data: OAuth2PasswordRequestForm = Depends(), db = get_db_session):
     user = await user_authendication(data.username, data.password, db)
 
