@@ -1,7 +1,6 @@
 from fastapi import APIRouter, status
 from db.get_db import get_db_session
 from repository.Repository import TagRepository
-from schema.out import TagOut
 from schema.input_ import TagInput
 from errors import NotFoundTag, ExistTag
 
