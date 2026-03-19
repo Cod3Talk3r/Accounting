@@ -1,6 +1,7 @@
-from schema.input_ import UserRegisterInput, UserUpdateInput
-from db.models import User
+from schema.input_ import UserRegisterInput, UserUpdateInput, TagInput
+from db.models import User, Tag
 import sqlalchemy as sa
+from pydantic import BaseModel
 
 
 class UserRepository():
@@ -16,17 +17,15 @@ class UserRepository():
     async def get_user_by_username(data: str, db) -> User:
         query = sa.select(User).where(User.username == data)
         result = await db.execute(query)
-        user = result.scalar_one_or_none()
 
-        return user
+        return result.scalar_one_or_none()
 
     @staticmethod
     async def get_user_by_id(id, db) -> User:
         query = sa.select(User).where(User.id == id)
         result = await db.execute(query)
-        user = result.scalar_one_or_none()
 
-        return user
+        return result.scalar_one_or_none()
 
     @staticmethod
     async def delete_user(user: User, db) -> None:
@@ -41,9 +40,33 @@ class UserRepository():
         await db.refresh(user)
 
     @staticmethod
-    async def is_username(username, db) -> bool:
+    async def is_username(username: str, db) -> bool:
         query = sa.select(User).where(User.username == username)
         result = await db.execute(query)
         user = result.scalar_one_or_none()
 
         return False if not user else True
+
+
+class TagRepository():
+    @staticmethod
+    async def get_all_tags(db) -> list[Tag]:
+        query = sa.select(Tag)
+        result = await db.execute(query)
+
+        return result.scalars().all()
+
+    @staticmethod
+    async def get_tag_by_name(name: str, db) -> Tag:
+        query = sa.select(Tag).where(Tag.name==name)
+        result = await db.execute(query)
+
+        return result.scalar_one_or_none()
+    
+    @staticmethod
+    async def create_tag(name: TagInput, db) -> None:
+        tag = Tag(**name.model_dump())
+
+        db.add(tag)
+        await db.commit()
+        await db.refresh(tag)
