@@ -31,3 +31,27 @@ async def create_tag(tag: TagInput, db=get_db_session):
         raise ExistTag
 
     await TagRepository.create_tag(tag, db)
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_tag_by_id(id: int, db=get_db_session):
+    tag = await TagRepository.get_tag_by_id(id, db)
+
+    if tag is None:
+        raise NotFoundTag
+    
+    await TagRepository.delete_tag(tag, db)
+
+
+@router.put("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def edit_tag_name(id: int, newName: TagInput, db=get_db_session):
+    tag = await TagRepository.get_tag_by_id(id, db)
+    newName.name = newName.name.casefold()
+
+    if tag is None:
+        raise NotFoundTag
+
+    if await TagRepository.get_tag_by_name(newName.name, db) is not None:
+        raise ExistTag
+    
+    await TagRepository.change_tag(tag, newName, db)
