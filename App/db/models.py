@@ -21,7 +21,8 @@ class Tag(Base):
     __tablename__ = "tags"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
+    ownerId = Column(Integer, ForeignKey("users.id"))
 
 
 class Acount(Base):
