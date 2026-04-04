@@ -1,7 +1,6 @@
 from schema.input_ import UserRegisterInput, UserUpdateInput, TagInput
 from db.models import User, Tag
 import sqlalchemy as sa
-from pydantic import BaseModel
 
 
 class UserRepository():
@@ -50,22 +49,22 @@ class UserRepository():
 
 class TagRepository():
     @staticmethod
-    async def get_all_tags(db) -> list[Tag]:
-        query = sa.select(Tag)
+    async def get_all_tags(ownerId: int, db) -> list[Tag]:
+        query = sa.select(Tag).where(Tag.ownerId==ownerId)
         result = await db.execute(query)
 
         return result.scalars().all()
 
     @staticmethod
-    async def get_tag_by_name(name: str, db) -> Tag:
-        query = sa.select(Tag).where(Tag.name==name)
+    async def get_tag_by_name(ownerId: int, name: str, db) -> Tag:
+        query = sa.select(Tag).where(Tag.name==name, Tag.ownerId==ownerId)
         result = await db.execute(query)
 
         return result.scalar_one_or_none()
 
     @staticmethod
-    async def get_tag_by_id(id: int, db) -> Tag:
-        query = sa.select(Tag).where(Tag.id==id)
+    async def get_tag_by_id(ownerId: int, id: int, db) -> Tag:
+        query = sa.select(Tag).where(Tag.id==id, Tag.ownerId==ownerId)
         result = await db.execute(query)
 
         return result.scalar_one_or_none()
