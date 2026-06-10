@@ -11,22 +11,24 @@ from utils.jwt import user_dependency
 router = APIRouter()
 
 
-@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(userToken=user_dependency, db=get_db_session):
+async def user_validate(userToken, db):
     user = await UserRepository.get_user_by_id(userToken.user_id, db)
-
+    
     if not user:
         raise NotFoundUser
+    return user
+
+
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(userToken=user_dependency, db=get_db_session):
+    user = await user_validate(userToken, db)
 
     await UserRepository.delete_user(user, db)
 
 
 @router.put("/ChangeUsername/", status_code=status.HTTP_204_NO_CONTENT)
 async def change_username(data: UserUpdateInput, userToken=user_dependency, db=get_db_session):
-    user = await UserRepository.get_user_by_id(userToken.user_id, db)
-
-    if not user:
-        raise NotFoundUser
+    user = await user_validate(userToken, db)
 
     if (data.username == user.username):
         pass
@@ -38,9 +40,6 @@ async def change_username(data: UserUpdateInput, userToken=user_dependency, db=g
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def user_by_id(userToken=user_dependency, db=get_db_session):
-    user = await UserRepository.get_user_by_id(userToken.user_id, db)
-
-    if not user:
-        raise NotFoundUser
+    user = await user_validate(userToken, db)
 
     return OutputGetUserById(username=user.username, role=user.role)
