@@ -1,16 +1,19 @@
 from fastapi import FastAPI
 from db.init_db import init_db
+from contextlib import asynccontextmanager
 import routers.users as users
 import routers.auth as auth
 import routers.tags as tags
 
 
-app = FastAPI()
-
-
-@app.on_event("startup")
-async def start_up():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await init_db()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/AppHealth")
