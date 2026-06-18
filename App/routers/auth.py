@@ -34,8 +34,6 @@ async def create_user(data: UserRegisterInput, db = get_db_session):
     await creating_default_tag(user_model.id, db)
 
 
-
-
 @router.post("/token", response_model=JWTResponsePayload)
 async def create_token(data: OAuth2PasswordRequestForm = Depends(), db = get_db_session):
     user = await user_authendication(data.username, data.password, db)
